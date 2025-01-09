@@ -17,6 +17,28 @@ loadFramePacks([
 	{name:'Snow', value:'M15EighthSnow'},
 	{name:'Universes Beyond', value:'M15EighthUB'},
 
+	{name:'Modern M15 Eighth Edition Transform', value:'disabled'},
+	{name:'Regular (Front)', value:'M15EighthTransformFront'},
+	{name:'Regular (Back)', value:'M15EighthTransformBack'},
+	{name:'Nyx (Front)', value:'M15EighthTransformNyxFront'},
+	{name:'Nyx (Back)', value:'M15EighthTransformNyxBack'},
+	{name:'Snow (Front)', value:'M15EighthTransformSnowFront'},
+	{name:'Snow (Back)', value:'M15EighthTransformSnowBack'},
+	{name:'Universes Beyond (Front)', value:'M15EighthTransformUBFront'},
+	{name:'Universes Beyond (Back)', value:'M15EighthTransformUBBack'},
+
+	{name:'Modern M15 Eighth Edition Tokens', value:'disabled'},
+	{name:'Regular', value:'M15EighthToken'},
+	{name:'Nyx', value:'M15EighthNyxToken'},
+	{name:'Snow', value:'M15EighthSnowToken'},
+	{name:'Universes Beyond', value:'M15EighthUBToken'},
+
+	{name:'Modern M15 Eighth Edition Tokens (Textless)', value:'disabled'},
+	{name:'Regular (Textless)', value:'M15EighthTokenTextless'},
+	{name:'Nyx (Textless)', value:'M15EighthNyxTokenTextless'},
+	{name:'Snow (Textless)', value:'M15EighthSnowTokenTextless'},
+	{name:'Universes Beyond (Textless)', value:'M15EighthUBTokenTextless'},
+
 	{name:'Classicshifted Series', value:'disabled'},
 	{name:'Classicshifted', value:'Classicshifted'},
 	{name:'Classicshifted Lands', value:'ClassicshiftedLands'},
