@@ -1,6 +1,7 @@
 const frameNames = new Map ([
 	//standard
 	['Regular Frames', 'M15Regular-1'],
+	['Enchantment Frames (Nyx)', 'M15Nyx'],
 	['Legend Crowns', 'M15LegendCrowns'],
 	['Legend Crowns (Etched)', 'LegendCrownsEtched'],
 	['Floating Legend Crowns', 'M15LegendCrownsFloating'],
