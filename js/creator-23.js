@@ -4113,6 +4113,30 @@ function uploadArt(imageSource, otherParams) {
 		};
 	}
 }
+async function pasteArt() {
+  try {
+    const clipboardItems = await navigator.clipboard.read();
+    
+    for (const item of clipboardItems) {
+      for (const type of item.types) {
+        if (type.startsWith('image/')) {
+          const blob = await item.getType(type);
+          
+          const url = URL.createObjectURL(blob);
+
+          uploadArt(url, document.querySelector("#art-update-autofit").checked ? "autoFit" : "");
+          // document.getElementById('preview').src = url;
+          return;
+        }
+      }
+    }
+
+    notify('No image found in clipboard!');
+  } catch (err) {
+    console.error('Failed to read clipboard: ', err);
+    notify('Clipboard access not allowed or no image available.');
+  }
+}
 function artEdited() {
 	card.artSource = art.src;
 	card.artX = document.querySelector('#art-x').value / card.width;
