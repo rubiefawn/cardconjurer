@@ -35,27 +35,17 @@ if (!loadedVersions.includes('/js/frames/versionClass.js')) {
 	fixClassInputs(classEdited);
 }
 	// placement for header
-function getCardClass() {
-	switch (card.version) {
-		case 'class':
-			return {
-				x: 0.5014,
-				width: 0.422
-			};
-		default:
-			return {
-				x: 0.5014,
-				width: 0.422
-			};
-	}
+	function getCardClass() {
+		switch (card.version) { case 
+			'class': return {x: 0.5014, width: 0.422};
+			default: return { x: 0.5014, width: 0.422};
+		}
 } 
 	// use correct header image
 function getHeaderPath() {
-    switch (card.version) {
-        case 'class':
-            return '/img/frames/class/header.png';
-        default:
-            return '/img/frames/class/header.png';
+    switch (card.version) { case 
+		'class': return '/img/frames/class/header.png';
+        default: return '/img/frames/class/header.png';
     }
 }
 
