@@ -37,8 +37,16 @@ if (!loadedVersions.includes('/js/frames/versionClass.js')) {
 	// placement for header
 function getCardClass() {
 	switch (card.version) {
-		case 'class': return {x: 0.5014, width: 0.422};
-		default: return { x: 0.5014, width: 0.422};
+		case 'class':
+			return {
+				x: 0.5014,
+				width: 0.422
+			};
+		default:
+			return {
+				x: 0.5014,
+				width: 0.422
+			};
 	}
 } 
 	// use correct header image
