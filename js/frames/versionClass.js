@@ -54,7 +54,7 @@ function classEdited() {
 	const headerPath = getHeaderPath();
 	if (!classHeader.src.endsWith(headerPath)) {
 		setImageUrl(classHeader, headerPath);
-}
+    }
 	//gather data
 	let classCount = 0;
 	var lastY = card.text.level0c.y;
