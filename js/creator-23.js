@@ -3547,12 +3547,15 @@ function writeText(textObject, targetContext) {
 		lineContext.shadowBlur = textShadowBlur;
 		lineContext.strokeStyle = textObject.outlineColor || 'black';
 		var textOutlineWidth = scaleHeight(textObject.outlineWidth) || 0;
-
+		var textLineCap = textObject.lineCap || 'round';
+		var textLineJoin = textObject.lineJoin || 'round';
 		var hideBottomInfoBorder = card.hideBottomInfoBorder || false;
 		if (hideBottomInfoBorder && ['midLeft', 'topLeft', 'note', 'bottomLeft', 'wizards', 'bottomRight', 'rarity'].includes(textObject.name)) {
 			textOutlineWidth = 0;
 		}
 		lineContext.lineWidth = textOutlineWidth;
+		lineContext.lineCap = textLineCap;
+		lineContext.lineJoin = textLineJoin;
 		//Begin looping through words/codes
 		innerloop: for (word of splitText) {
 			var wordToWrite = word;
@@ -3656,6 +3659,10 @@ function writeText(textObject, targetContext) {
 				} else if (possibleCode.includes('outline')) {
 					textOutlineWidth = parseInt(possibleCode.replace('outline', ''));
 					lineContext.lineWidth = textOutlineWidth;
+				} else if (possibleCode.includes('linecap')) {
+					lineContext.lineCap = possibleCode.replace('linecap', '').trim();
+				} else if (possibleCode.includes('linejoin')) {
+					lineContext.lineJoin = possibleCode.replace('linejoin', '').trim();
 				} else if (possibleCode.includes('upinline')) {
 					lineY -= parseInt(possibleCode.replace('upinline', '')) || 0;
 				} else if (possibleCode.substring(0, 2) == 'up' && possibleCode != 'up') {
