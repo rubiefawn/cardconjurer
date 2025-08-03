@@ -78,6 +78,7 @@ document.querySelector('#loadFrameVersion').onclick = async function() {
 	//watermark bounds
 	card.watermarkBounds = {x:0.5, y:0.7762, width:0.75, height:0.2305};
 	resetWatermark();
+	await document.fonts.load('1em Plantin-MT-Pro-Rg');
 	//text
 	loadTextOptions({
 		mana: {name:'Mana Cost', text:'', y:0.0683, width:0.9190, height:71/2100, oneLine:true, size:71/1638, align:'right', outlineWidth:0.010, manaCost:true, manaSpacing:0,},
