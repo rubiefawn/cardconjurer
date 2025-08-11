@@ -5267,7 +5267,8 @@ function parseMultiFacedCards(card) {
 			  oracle_text: card.oracle_text,
 			  mana_cost: card.mana_cost,
 			  power: card.power,
-			  toughness: card.toughness
+			  toughness: card.toughness,
+			  flavor_text: card.flavor_text 
 			},
 			// Back face (need to find)
 			null
@@ -5287,7 +5288,8 @@ function parseMultiFacedCards(card) {
 			oracle_text: backFace.oracle_text,
 			mana_cost: backFace.mana_cost,
 			power: backFace.power,
-			toughness: backFace.toughness
+			toughness: backFace.toughness,
+			flavor_text: backFace.flavor_text
 		  };
 		}
   
@@ -5316,6 +5318,12 @@ function parseMultiFacedCards(card) {
 		loadScript('/js/frames/packFuse.js');
 	} else if (card.layout === 'aftermath') {
 		loadScript('/js/frames/packAftermath.js');
+	} else if (card.layout === 'adventure') {
+		loadScript('/js/frames/packAdventure.js');
+	} else if (card.layout === 'omen') {
+		loadScript('/js/frames/packOmen.js');
+	} else if (card.layout === 'room') {
+		loadScript('/js/frames/packRoom.js');
 	}
 	
   
@@ -5330,14 +5338,16 @@ function parseMultiFacedCards(card) {
 		type: frontFace.type_line || '',
 		rules: frontFace.oracle_text || '',
 		mana: frontFace.mana_cost || '',
-		pt: frontFace.power ? `${frontFace.power}/${frontFace.toughness}` : ''
+		pt: frontFace.power ? `${frontFace.power}/${frontFace.toughness}` : '',
+		flavor: frontFace.flavor_text || ''
 	  },
 	  back: {
 		name: backFace.name || '',
 		type: backFace.type_line || '', 
 		rules: backFace.oracle_text || '',
 		mana: backFace.mana_cost || '',
-		pt: backFace.power ? `${backFace.power}/${backFace.toughness}` : ''
+		pt: backFace.power ? `${backFace.power}/${backFace.toughness}` : '',
+		flavor: backFace.flavor_text || ''
 	  }
 	};
   
@@ -5354,7 +5364,7 @@ function changeCardIndex() {
 
     // Clear all existing text fields to prevent old data from persisting BUT preserve fuse reminder text if we're using a fuse frame
     var savedFuseReminderText = '';
-    if (card.text && card.text.reminder && card.version === 'fuse') {
+    if (card.text && card.text.reminder && card.version === 'fuse' || card.version === 'room') {
         savedFuseReminderText = card.text.reminder.text;
     }
     
@@ -5365,7 +5375,7 @@ function changeCardIndex() {
     }
 
 	// Restore fuse reminder text if it was saved
-	if (savedFuseReminderText && card.text && card.text.reminder && card.version === 'fuse') {
+	if (savedFuseReminderText && card.text && card.text.reminder && card.version === 'fuse' || card.version === 'room') {
 		card.text.reminder.text = savedFuseReminderText;
 	}
 		
@@ -5373,11 +5383,11 @@ function changeCardIndex() {
 	var langFontCode = "";
 	if (cardToImport.lang == "ph") {langFontCode = "{fontphyrexian}"}
 // Handle flip cards, split cards, and fuse cards
-if (['flip', 'modal_dfc', 'transform', 'split'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath'].includes(card.version)) {
+if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath', 'adventure', 'omen', 'room'].includes(card.version)) {
     
     parseMultiFacedCards(cardToImport).then(flipData => {
 	if (!flipData) {
-		console.error('Failed to parse flip/split/fuse/aftermath card data');
+		console.error('Failed to parse flip/split/fuse/aftermath/adventure card data');
 		return;
 		}
   
@@ -5402,45 +5412,29 @@ if (['flip', 'modal_dfc', 'transform', 'split'].includes(cardToImport.layout) &&
   
       // Update text fields based on card version
       
-      if (card.version === 'flip' || card.version === 'aftermath') {
-          // Flip card logic (existing)
+      if (card.version === 'flip' || card.version === 'aftermath' || card.version === 'split' || card.version === 'fuse' || card.version === 'adventure'|| card.version === 'omen'|| card.version === 'room') {
+          // Multi Faced card handling
+		  //Font Face
           if (card.text?.title && card.text?.mana) {
             card.text.title.text = langFontCode + flipData.front.name;
             card.text.type.text = langFontCode + flipData.front.type; 
             card.text.rules.text = langFontCode + flipData.front.rules;
+			if (flipData.front.flavor) {
+                card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
+            }
             card.text.mana.text = flipData.front.mana || '';
             if (card.text.pt) {
                 card.text.pt.text = flipData.front.pt || '';
             }
           }
-      
+		  //Back Face
           if (card.text?.title2 && card.text?.mana2) {
             card.text.title2.text = langFontCode + flipData.back.name;
             card.text.type2.text = langFontCode + flipData.back.type;
             card.text.rules2.text = langFontCode + flipData.back.rules;
-            card.text.mana2.text = flipData.back.mana || '';
-            if (card.text.pt2) {
-                card.text.pt2.text = flipData.back.pt || '';
+			if (flipData.back.flavor) {
+                card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
             }
-          }
-      } else if (card.version === 'split' || card.version === 'fuse') {
-          // Split card logic (new)
-          // Left side (front face)
-          if (card.text?.title && card.text?.mana) {
-            card.text.title.text = langFontCode + flipData.front.name;
-            card.text.type.text = langFontCode + flipData.front.type; 
-            card.text.rules.text = langFontCode + flipData.front.rules;
-            card.text.mana.text = flipData.front.mana || '';
-            if (card.text.pt) {
-                card.text.pt.text = flipData.front.pt || '';
-            }
-          }
-          
-          // Right side (back face)
-          if (card.text?.title2 && card.text?.mana2) {
-            card.text.title2.text = langFontCode + flipData.back.name;
-            card.text.type2.text = langFontCode + flipData.back.type;
-            card.text.rules2.text = langFontCode + flipData.back.rules;
             card.text.mana2.text = flipData.back.mana || '';
 			if (card.text.pt2) {
                 card.text.pt2.text = flipData.back.pt || '';
