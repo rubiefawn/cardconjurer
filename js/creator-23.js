@@ -5307,14 +5307,17 @@ function parseMultiFacedCards(card) {
 	  return;
 	}
   
-    // Only load flip frame script if we're actually using flip frames
+    // Only load flip frame script if we're actually using Multi Faced frames
     if (card.layout === 'flip') {
         loadScript('/js/frames/packFlip.js');
     } else if (card.layout === 'split') {
         loadScript('/js/frames/packSplit.js');
 	} else if (card.layout === 'fuse') {
 		loadScript('/js/frames/packFuse.js');
+	} else if (card.layout === 'aftermath') {
+		loadScript('/js/frames/packAftermath.js');
 	}
+	
   
 	// Extract faces with safe access
 	const frontFace = card.card_faces[0] || {};
@@ -5345,7 +5348,7 @@ function parseMultiFacedCards(card) {
   }
 function changeCardIndex() {
 	var cardToImport = scryfallCard[document.querySelector('#import-index').value];
-	// Add debug logging for flip card detection
+	// Add debug logging for card Layout detection
 	console.log('Card layout:', cardToImport.layout);
 	console.log('Card version:', card.version);
 
@@ -5370,11 +5373,11 @@ function changeCardIndex() {
 	var langFontCode = "";
 	if (cardToImport.lang == "ph") {langFontCode = "{fontphyrexian}"}
 // Handle flip cards, split cards, and fuse cards
-if (['flip', 'modal_dfc', 'transform', 'split'].includes(cardToImport.layout) && ['flip', 'split', 'fuse'].includes(card.version)) {
+if (['flip', 'modal_dfc', 'transform', 'split'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath'].includes(card.version)) {
     
     parseMultiFacedCards(cardToImport).then(flipData => {
 	if (!flipData) {
-		console.error('Failed to parse flip/split/fuse card data');
+		console.error('Failed to parse flip/split/fuse/aftermath card data');
 		return;
 		}
   
@@ -5399,7 +5402,7 @@ if (['flip', 'modal_dfc', 'transform', 'split'].includes(cardToImport.layout) &&
   
       // Update text fields based on card version
       
-      if (card.version === 'flip') {
+      if (card.version === 'flip' || card.version === 'aftermath') {
           // Flip card logic (existing)
           if (card.text?.title && card.text?.mana) {
             card.text.title.text = langFontCode + flipData.front.name;
