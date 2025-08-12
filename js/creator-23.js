@@ -5252,58 +5252,45 @@ function extractSagaReminderText(text) {
 }
 
 function parseMultiFacedCards(card) {
-    return new Promise((resolve) => {
-        let frontFace, backFace;
-        
-        if (card.object === "card_face") {
-            // Battle cards: find faces from scryfallCard array
-            frontFace = card;
-            backFace = scryfallCard.find(face => 
-                face.object === "card_face" && 
-                face.name !== card.name
-            );
-			console.log('Battle card parsing:');
-            console.log('Front face:', frontFace);
-            console.log('Back face:', backFace);
-        } else if (card.card_faces) {
-            // Traditional multi-faced cards
-            frontFace = card.card_faces[0] || {};
-            backFace = card.card_faces[1] || {};
-        } else {
-            resolve(null);
-            return;
+    let [frontFace, backFace] = card.card_faces ?? []
+    
+    if (card.object === "card_face") {
+        // Battle cards: find faces from scryfallCard array
+        frontFace = card;
+        backFace = scryfallCard.find(face => 
+            face.object === "card_face" && 
+            face.name !== card.name
+        );
+    }
+    
+    if (!frontFace || !backFace) {
+        console.error('Could not find both faces for multi-faced card');
+        return null;
+    }
+    
+    // Single processing logic for both types
+    const faces = {
+        front: {
+            name: frontFace.name || '',
+            type: frontFace.type_line || '',
+            rules: frontFace.oracle_text || '',
+            mana: frontFace.mana_cost || '',
+            pt: frontFace.power ? `${frontFace.power}/${frontFace.toughness}` : '',
+            defense: frontFace.defense || '',
+            flavor: frontFace.flavor_text || ''
+        },
+        back: {
+            name: backFace.name || '',
+            type: backFace.type_line || '',
+            rules: backFace.oracle_text || '',
+            mana: backFace.mana_cost || '',
+            pt: backFace.power ? `${backFace.power}/${backFace.toughness}` : '',
+            defense: backFace.defense || '',
+            flavor: backFace.flavor_text || ''
         }
-        
-        if (!frontFace || !backFace) {
-            console.error('Could not find both faces for multi-faced card');
-            resolve(null);
-            return;
-        }
-        
-        // Single processing logic for both types
-        const faces = {
-            front: {
-                name: frontFace.name || '',
-                type: frontFace.type_line || '',
-                rules: frontFace.oracle_text || '',
-                mana: frontFace.mana_cost || '',
-                pt: frontFace.power ? `${frontFace.power}/${frontFace.toughness}` : '',
-                defense: frontFace.defense || '',
-                flavor: frontFace.flavor_text || ''
-            },
-            back: {
-                name: backFace.name || '',
-                type: backFace.type_line || '',
-                rules: backFace.oracle_text || '',
-                mana: backFace.mana_cost || '',
-                pt: backFace.power ? `${backFace.power}/${backFace.toughness}` : '',
-                defense: backFace.defense || '',
-                flavor: backFace.flavor_text || ''
-            }
-        };
-        
-        resolve(faces);
-    });
+    };
+    
+    return faces;
 }
 function changeCardIndex() {
 	var cardToImport = scryfallCard[document.querySelector('#import-index').value];
@@ -5331,66 +5318,36 @@ function changeCardIndex() {
 	//text
 	var langFontCode = "";
 	if (cardToImport.lang == "ph") {langFontCode = "{fontphyrexian}"}
-// Handle Multi Faced Card Layouts
-if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath', 'adventure', 'omen', 'room', 'battle'].includes(card.version)) {
-	console.log('Multi-faced condition MET - calling parseMultiFacedCards');
-    parseMultiFacedCards(cardToImport).then(flipData => {
-	if (!flipData) {
-		console.error('Failed to parse Multi Faced card data');
-		return;
+	// Handle Multi Faced Card Layouts
+	if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath', 'adventure', 'omen', 'room', 'battle'].includes(card.version)) {
+		const flipData = parseMultiFacedCards(cardToImport);
+		if (!flipData) {
+			console.error('Failed to parse Multi Faced card data');
+			return;
 		}
-  
-      // Add artist info
-      if (cardToImport.artist) {
-        artistEdited(cardToImport.artist);
-      }
-  
-      // Handle art loading 
-      if (cardToImport.image_uris?.art_crop) {
-        uploadArt(cardToImport.image_uris.art_crop, 'autoFit');
-      }
-  
-      // Handle set symbol
-      if (!document.querySelector('#lockSetSymbolCode').checked) {
-        document.querySelector('#set-symbol-code').value = cardToImport.set;
-        document.querySelector('#set-symbol-rarity').value = cardToImport.rarity.slice(0, 1);
-        if (!document.querySelector('#lockSetSymbolURL').checked) {
-          fetchSetSymbol();
-        }
-      }
-	  
-	  // Multi Faced card handling
-      // Update text fields based on card version
-      
-      if (card.version === 'flip' || card.version === 'aftermath' || card.version === 'split' || card.version === 'fuse' || card.version === 'adventure'|| card.version === 'omen'|| card.version === 'room') {
-		
-		  //Font Face
-          if (card.text?.title && card.text?.mana) {
-            card.text.title.text = langFontCode + flipData.front.name;
-            card.text.type.text = langFontCode + flipData.front.type; 
-            card.text.rules.text = langFontCode + flipData.front.rules;
-			if (flipData.front.flavor) {
-                card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
-            }
-            card.text.mana.text = flipData.front.mana || '';
-            if (card.text.pt) {
-                card.text.pt.text = flipData.front.pt || '';
-            }
-          }
-		  //Back Face
-          if (card.text?.title2 && card.text?.mana2) {
-            card.text.title2.text = langFontCode + flipData.back.name;
-            card.text.type2.text = langFontCode + flipData.back.type;
-            card.text.rules2.text = langFontCode + flipData.back.rules;
-			if (flipData.back.flavor) {
-                card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
-            }
-            card.text.mana2.text = flipData.back.mana || '';
-			if (card.text.pt2) {
-                card.text.pt2.text = flipData.back.pt || '';
-            }
-				}
-		} else if (card.version === 'battle') {
+	
+		// Add artist info
+		if (cardToImport.artist) {
+			artistEdited(cardToImport.artist);
+		}
+	
+		// Handle art loading 
+		if (cardToImport.image_uris?.art_crop) {
+			uploadArt(cardToImport.image_uris.art_crop, 'autoFit');
+		}
+	
+		// Handle set symbol
+		if (!document.querySelector('#lockSetSymbolCode').checked) {
+			document.querySelector('#set-symbol-code').value = cardToImport.set;
+			document.querySelector('#set-symbol-rarity').value = cardToImport.rarity.slice(0, 1);
+			if (!document.querySelector('#lockSetSymbolURL').checked) {
+			fetchSetSymbol();
+			}
+		}
+	
+		// Multi Faced card handling
+		// Update text fields based on card version
+		if (card.version === 'battle') {
 			//Front Face (Battle side)
 			if (card.text?.title && card.text?.mana) {
 				card.text.title.text = langFontCode + flipData.front.name;
@@ -5409,11 +5366,39 @@ if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImpo
 			if (card.text?.pt2) {
 				card.text.pt2.text = flipData.back.pt || '';
 			}
-      }
-  
-      textEdited();
-    });
-  }
+		} else {
+				
+			//Font Face
+			if (card.text?.title && card.text?.mana) {
+				card.text.title.text = langFontCode + flipData.front.name;
+				card.text.type.text = langFontCode + flipData.front.type; 
+				card.text.rules.text = langFontCode + flipData.front.rules;
+				if (flipData.front.flavor) {
+					card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
+				}
+				card.text.mana.text = flipData.front.mana || '';
+				if (card.text.pt) {
+					card.text.pt.text = flipData.front.pt || '';
+				}
+			}
+			//Back Face
+			if (card.text?.title2 && card.text?.mana2) {
+				card.text.title2.text = langFontCode + flipData.back.name;
+				card.text.type2.text = langFontCode + flipData.back.type;
+				card.text.rules2.text = langFontCode + flipData.back.rules;
+				if (flipData.back.flavor) {
+					card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
+				}
+				card.text.mana2.text = flipData.back.mana || '';
+				if (card.text.pt2) {
+					card.text.pt2.text = flipData.back.pt || '';
+				}
+					}
+			}
+	
+		textEdited();
+		
+	}
 	var name = cardToImport.name || '';
 	if (name.startsWith('A-')) { name = name.replace('A-', '{alchemy}'); }
 
