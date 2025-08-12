@@ -5347,54 +5347,46 @@ function changeCardIndex() {
 	
 		// Multi Faced card handling
 		// Update text fields based on card version
-		if (card.version === 'battle') {
-			//Front Face (Battle side)
-			if (card.text?.title && card.text?.mana) {
-				card.text.title.text = langFontCode + flipData.front.name;
-				card.text.type.text = langFontCode + flipData.front.type; 
-				card.text.rules.text = langFontCode + flipData.front.rules;
-				if (flipData.front.flavor) {
-					card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
-				}
-				card.text.mana.text = flipData.front.mana || '';
-				// For battles, front face doesn't have PT, but has defense
+		//Front Face (standard handling for all multi-faced cards)
+		if (card.text?.title && card.text?.mana) {
+			card.text.title.text = langFontCode + flipData.front.name;
+			card.text.type.text = langFontCode + flipData.front.type; 
+			card.text.rules.text = langFontCode + flipData.front.rules;
+			if (flipData.front.flavor) {
+				card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
+			}
+			card.text.mana.text = flipData.front.mana || '';
+			
+			// Handle PT vs Defense based on card version
+			if (card.version === 'battle') {
+				// For battles, only the defense field is unique
 				if (card.text.defense) {
 					card.text.defense.text = flipData.front.defense || '';
 				}
-			}
-			//Back Face (Transformed creature)
-			if (card.text?.pt2) {
-				card.text.pt2.text = flipData.back.pt || '';
-			}
-		} else {
-				
-			//Font Face
-			if (card.text?.title && card.text?.mana) {
-				card.text.title.text = langFontCode + flipData.front.name;
-				card.text.type.text = langFontCode + flipData.front.type; 
-				card.text.rules.text = langFontCode + flipData.front.rules;
-				if (flipData.front.flavor) {
-					card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
-				}
-				card.text.mana.text = flipData.front.mana || '';
+			} else {
+				// For other multi-faced cards, use standard PT
 				if (card.text.pt) {
 					card.text.pt.text = flipData.front.pt || '';
 				}
 			}
-			//Back Face
-			if (card.text?.title2 && card.text?.mana2) {
-				card.text.title2.text = langFontCode + flipData.back.name;
-				card.text.type2.text = langFontCode + flipData.back.type;
-				card.text.rules2.text = langFontCode + flipData.back.rules;
-				if (flipData.back.flavor) {
-					card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
-				}
-				card.text.mana2.text = flipData.back.mana || '';
-				if (card.text.pt2) {
-					card.text.pt2.text = flipData.back.pt || '';
-				}
-					}
+		}
+
+		//Back Face (standard handling for all multi-faced cards)
+		if (card.text?.title2 && card.text?.mana2) {
+			card.text.title2.text = langFontCode + flipData.back.name;
+			card.text.type2.text = langFontCode + flipData.back.type;
+			card.text.rules2.text = langFontCode + flipData.back.rules;
+			if (flipData.back.flavor) {
+				card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
 			}
+			card.text.mana2.text = flipData.back.mana || '';
+			if (card.text.pt2) {
+				card.text.pt2.text = flipData.back.pt || '';
+			}
+		} else if (card.version === 'battle' && card.text?.pt2) {
+			// Battle back face uses standard PT (transformed creature)
+			card.text.pt2.text = flipData.back.pt || '';
+		}
 	
 		textEdited();
 		
