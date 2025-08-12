@@ -5252,117 +5252,66 @@ function extractSagaReminderText(text) {
 }
 
 function parseMultiFacedCards(card) {
-	return new Promise((resolve) => {
-      // If we have a card face, build a full flip/split card
-      if (card.object === "card_face") {
-		
-		// Create the flip card structure
-		const flipCard = {
-		  name: card.name,
-		  card_faces: [
-			// Front face (the one we have)
-			{
-			  name: card.name,
-			  type_line: card.type_line,
-			  oracle_text: card.oracle_text,
-			  mana_cost: card.mana_cost,
-			  power: card.power,
-			  toughness: card.toughness,
-			  flavor_text: card.flavor_text 
-			},
-			// Back face (need to find)
-			null
-		  ]
-		};
-  
-		// Attempt to find matching back face from scryfallCard array
-		const backFace = scryfallCard.find(face => 
-		  face.object === "card_face" && 
-		  face.name !== card.name
-		);
-  
-		if (backFace) {
-		  flipCard.card_faces[1] = {
-			name: backFace.name,
-			type_line: backFace.type_line, 
-			oracle_text: backFace.oracle_text,
-			mana_cost: backFace.mana_cost,
-			power: backFace.power,
-			toughness: backFace.toughness,
-			flavor_text: backFace.flavor_text
-		  };
-		}
-  
-		parseMultiFacedCardData(flipCard, resolve);
-		return;
-	  }
-  
-	  // Otherwise process normally
-	  parseMultiFacedCardData(card, resolve);
-	});
-  }
-  
-  function parseMultiFacedCardData(card, resolve) {
-	// Add validation 
-	if (!card || !card.card_faces) {
-	  resolve(null);
-	  return;
-	}
-  
-    // Only load flip frame script if we're actually using Multi Faced frames
-    if (card.layout === 'flip') {
-        loadScript('/js/frames/packFlip.js');
-    } else if (card.layout === 'split') {
-        loadScript('/js/frames/packSplit.js');
-	} else if (card.layout === 'fuse') {
-		loadScript('/js/frames/packFuse.js');
-	} else if (card.layout === 'aftermath') {
-		loadScript('/js/frames/packAftermath.js');
-	} else if (card.layout === 'adventure') {
-		loadScript('/js/frames/packAdventure.js');
-	} else if (card.layout === 'omen') {
-		loadScript('/js/frames/packOmen.js');
-	} else if (card.layout === 'room') {
-		loadScript('/js/frames/packRoom.js');
-	}
-	
-  
-	// Extract faces with safe access
-	const frontFace = card.card_faces[0] || {};
-	const backFace = card.card_faces[1] || {};
-   
-	// Create faces object
-	const faces = {
-	  front: {
-		name: frontFace.name || '',
-		type: frontFace.type_line || '',
-		rules: frontFace.oracle_text || '',
-		mana: frontFace.mana_cost || '',
-		pt: frontFace.power ? `${frontFace.power}/${frontFace.toughness}` : '',
-		flavor: frontFace.flavor_text || ''
-	  },
-	  back: {
-		name: backFace.name || '',
-		type: backFace.type_line || '', 
-		rules: backFace.oracle_text || '',
-		mana: backFace.mana_cost || '',
-		pt: backFace.power ? `${backFace.power}/${backFace.toughness}` : '',
-		flavor: backFace.flavor_text || ''
-	  }
-	};
-  
-	// Resolve with faces data
-	setTimeout(() => {
-	  resolve(faces);
-	}, 100);
-  }
+    return new Promise((resolve) => {
+        let frontFace, backFace;
+        
+        if (card.object === "card_face") {
+            // Battle cards: find faces from scryfallCard array
+            frontFace = card;
+            backFace = scryfallCard.find(face => 
+                face.object === "card_face" && 
+                face.name !== card.name
+            );
+			console.log('Battle card parsing:');
+            console.log('Front face:', frontFace);
+            console.log('Back face:', backFace);
+        } else if (card.card_faces) {
+            // Traditional multi-faced cards
+            frontFace = card.card_faces[0] || {};
+            backFace = card.card_faces[1] || {};
+        } else {
+            resolve(null);
+            return;
+        }
+        
+        if (!frontFace || !backFace) {
+            console.error('Could not find both faces for multi-faced card');
+            resolve(null);
+            return;
+        }
+        
+        // Single processing logic for both types
+        const faces = {
+            front: {
+                name: frontFace.name || '',
+                type: frontFace.type_line || '',
+                rules: frontFace.oracle_text || '',
+                mana: frontFace.mana_cost || '',
+                pt: frontFace.power ? `${frontFace.power}/${frontFace.toughness}` : '',
+                defense: frontFace.defense || '',
+                flavor: frontFace.flavor_text || ''
+            },
+            back: {
+                name: backFace.name || '',
+                type: backFace.type_line || '',
+                rules: backFace.oracle_text || '',
+                mana: backFace.mana_cost || '',
+                pt: backFace.power ? `${backFace.power}/${backFace.toughness}` : '',
+                defense: backFace.defense || '',
+                flavor: backFace.flavor_text || ''
+            }
+        };
+        
+        resolve(faces);
+    });
+}
 function changeCardIndex() {
 	var cardToImport = scryfallCard[document.querySelector('#import-index').value];
 	// Add debug logging for card Layout detection
 	console.log('Card layout:', cardToImport.layout);
 	console.log('Card version:', card.version);
 
-    // Clear all existing text fields to prevent old data from persisting BUT preserve fuse reminder text if we're using a fuse frame
+    // Clear all existing text fields to prevent old data from persisting BUT preserve fuse reminder text if we're using a fuse/room frame
     var savedFuseReminderText = '';
     if (card.text && card.text.reminder && card.version === 'fuse' || card.version === 'room') {
         savedFuseReminderText = card.text.reminder.text;
@@ -5382,12 +5331,12 @@ function changeCardIndex() {
 	//text
 	var langFontCode = "";
 	if (cardToImport.lang == "ph") {langFontCode = "{fontphyrexian}"}
-// Handle flip cards, split cards, and fuse cards
-if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath', 'adventure', 'omen', 'room'].includes(card.version)) {
-    
+// Handle Multi Faced Card Layouts
+if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImport.layout) && ['flip', 'split', 'fuse', 'aftermath', 'adventure', 'omen', 'room', 'battle'].includes(card.version)) {
+	console.log('Multi-faced condition MET - calling parseMultiFacedCards');
     parseMultiFacedCards(cardToImport).then(flipData => {
 	if (!flipData) {
-		console.error('Failed to parse flip/split/fuse/aftermath/adventure card data');
+		console.error('Failed to parse Multi Faced card data');
 		return;
 		}
   
@@ -5409,11 +5358,12 @@ if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImpo
           fetchSetSymbol();
         }
       }
-  
+	  
+	  // Multi Faced card handling
       // Update text fields based on card version
       
       if (card.version === 'flip' || card.version === 'aftermath' || card.version === 'split' || card.version === 'fuse' || card.version === 'adventure'|| card.version === 'omen'|| card.version === 'room') {
-          // Multi Faced card handling
+		
 		  //Font Face
           if (card.text?.title && card.text?.mana) {
             card.text.title.text = langFontCode + flipData.front.name;
@@ -5439,7 +5389,26 @@ if (['flip', 'modal_dfc', 'transform', 'split', 'adventure'].includes(cardToImpo
 			if (card.text.pt2) {
                 card.text.pt2.text = flipData.back.pt || '';
             }
-          }
+				}
+		} else if (card.version === 'battle') {
+			//Front Face (Battle side)
+			if (card.text?.title && card.text?.mana) {
+				card.text.title.text = langFontCode + flipData.front.name;
+				card.text.type.text = langFontCode + flipData.front.type; 
+				card.text.rules.text = langFontCode + flipData.front.rules;
+				if (flipData.front.flavor) {
+					card.text.rules.text += '{flavor}' + curlyQuotes(flipData.front.flavor.replace('\n', '{lns}'));
+				}
+				card.text.mana.text = flipData.front.mana || '';
+				// For battles, front face doesn't have PT, but has defense
+				if (card.text.defense) {
+					card.text.defense.text = flipData.front.defense || '';
+				}
+			}
+			//Back Face (Transformed creature)
+			if (card.text?.pt2) {
+				card.text.pt2.text = flipData.back.pt || '';
+			}
       }
   
       textEdited();
