@@ -5298,7 +5298,7 @@ function changeCardIndex() {
 	console.log('Card layout:', cardToImport.layout);
 	console.log('Card version:', card.version);
 
-    // Clear all existing text fields to prevent old data from persisting BUT preserve fuse reminder text if we're using a fuse/room frame
+    // Clear all existing text fields to prevent old data from persisting BUT preserve Multi Face reminder text if we're using a Multi Face frame
     var savedFuseReminderText = '';
     if (card.text && card.text.reminder && card.version === 'fuse' || card.version === 'room') {
         savedFuseReminderText = card.text.reminder.text;
@@ -5310,10 +5310,20 @@ function changeCardIndex() {
         });
     }
 
-	// Restore fuse reminder text if it was saved
-	if (savedFuseReminderText && card.text && card.text.reminder && card.version === 'fuse' || card.version === 'room') {
-		card.text.reminder.text = savedFuseReminderText;
-	}
+    // Update reminder text from imported card if available
+    var importedReminderText = '';
+    if (cardToImport.oracle_text) {
+        // Extract reminder text from oracle text (text in parentheses)
+        var reminderMatch = cardToImport.oracle_text.match(/\([^)]+\)/);
+        if (reminderMatch) {
+            importedReminderText = reminderMatch[0];
+        }
+    }
+
+    // Restore reminder text: use imported if available, otherwise use saved
+    if (card.text && card.text.reminder && (card.version === 'fuse' || card.version === 'room')) {
+        card.text.reminder.text = importedReminderText || savedFuseReminderText;
+    }
 		
 	//text
 	var langFontCode = "";
@@ -5372,17 +5382,20 @@ function changeCardIndex() {
 		}
 
 		//Back Face (standard handling for all multi-faced cards)
-		if (card.text?.title2 && card.text?.mana2) {
-			card.text.title2.text = langFontCode + flipData.back.name;
-			card.text.type2.text = langFontCode + flipData.back.type;
-			card.text.rules2.text = langFontCode + flipData.back.rules;
-			if (flipData.back.flavor) {
-				card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
-			}
-			card.text.mana2.text = flipData.back.mana || '';
-			if (card.text.pt2) {
-				card.text.pt2.text = flipData.back.pt || '';
-			}
+        if (card.text?.title2 && card.text?.mana2) {
+            card.text.title2.text = langFontCode + flipData.back.name;
+            // Skip importing back type for room cards AND battle cards
+            if (!cardToImport.type_line?.toLowerCase().includes('room')) {
+                card.text.type2.text = langFontCode + flipData.back.type;
+            }
+            card.text.rules2.text = langFontCode + flipData.back.rules;
+            if (flipData.back.flavor) {
+                card.text.rules2.text += '{flavor}' + curlyQuotes(flipData.back.flavor.replace('\n', '{lns}'));
+            }
+            card.text.mana2.text = flipData.back.mana || '';
+            if (card.text.pt2) {
+                card.text.pt2.text = flipData.back.pt || '';
+            }
 		} else if (card.version === 'battle' && card.text?.pt2) {
 			// Battle back face uses standard PT (transformed creature)
 			card.text.pt2.text = flipData.back.pt || '';
