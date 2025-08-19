@@ -5893,9 +5893,11 @@ function changeCardIndex() {
 		}
 		planeswalkerEdited();
 	} else if (card.version.includes('saga')) {
-		if (card.text.flavor) {
-			// future support sagas with flavor text
-			card.text.flavor.text = cardToImport.flavor_text || '';
+		if (card.text.rules2) {
+			const combinedText = [cardToImport.flavor_text, ...(cardToImport.keywords || [])]
+				.filter(Boolean)
+				.join('\n');
+			card.text.rules2.text = combinedText;
 		}
 		const abilities = parseSagaAbilities(cardToImport.oracle_text);
 		for (let i = 0; i < abilities.length; i++) {
