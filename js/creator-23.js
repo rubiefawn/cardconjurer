@@ -1590,7 +1590,9 @@ function makeM15FrameByLetter(letter, mask = false, maskToRightHalf = false, sty
 
 	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && letter.includes('L') && letter.length > 1) {
 		letter = letter[0];
-	}
+	} else if (letter == 'L' && style == 'Nyx') {
+		style = 'regular'
+;	}
 
 	var frameName = frameNames[letter];
 
