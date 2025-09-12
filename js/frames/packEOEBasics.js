@@ -11,6 +11,8 @@ availableFrames = [
 	{name:'Multicolored Frame', src:'/img/frames/textless/eoe/m.png', masks:masks},
 	{name:'Colorless Frame', src:'/img/frames/textless/eoe/a.png', masks:masks},
     {name:'Waste Frame', src:'/img/frames/textless/eoe/L.png', masks:masks},
+	{name:'No Aplha Frame (Use Mask To Remove Symbol Or Title From Other Frames)', src:'/img/frames/textless/eoe/aNoAlpha.png', masks:masks}
+
 ];
 //disables/enables the "Load Frame Version" button
 document.querySelector('#loadFrameVersion').disabled = false;
