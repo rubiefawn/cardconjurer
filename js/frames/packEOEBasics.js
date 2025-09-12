@@ -23,7 +23,7 @@ document.querySelector('#loadFrameVersion').onclick = async function() {
 	//sets card version
 	card.version = 'eoeBasics';
 	//art bounds
-	card.artBounds = {x:0, y:0, width:1.05, height:0.9224};
+	card.artBounds = {x:0, y:0, width:1.05, height:0.9324};
 	autoFitArt();
 	//set symbol bounds
 	card.setSymbolBounds = {x:0.9213, y:0.8739, width:0.12, height:0.0410, vertical:'center', horizontal: 'right'};
