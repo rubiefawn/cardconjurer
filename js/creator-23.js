@@ -5129,7 +5129,13 @@ function importCard(cardObject) {
 	cardObject.forEach(card => {
 		if (card.type_line && card.type_line != 'Card') {
 			var option = document.createElement('option');
-			var title = `${card.name} `;
+			var name = card.printed_name || card.name;
+			if (card.flavor_name) {
+				name += " (" + card.flavor_name +")";
+			} else if (card.printed_name) {
+				name += " (" + card.name + ")";
+			}
+			var title = `${name} `;
 			if (document.querySelector('#importAllPrints').checked) {
 				title += `(${card.set.toUpperCase()} #${card.collector_number})`;
 			} else {
@@ -5259,7 +5265,7 @@ function changeCardIndex() {
 	//text
 	var langFontCode = "";
 	if (cardToImport.lang == "ph") {langFontCode = "{fontphyrexian}"}
-	var name = cardToImport.name || '';
+	var name = cardToImport.printed_name || cardToImport.name || '';
 	if (name.startsWith('A-')) { name = name.replace('A-', '{alchemy}'); }
 
 	if (card.text.title) {
