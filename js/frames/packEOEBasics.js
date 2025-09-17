@@ -1,5 +1,6 @@
 //Create objects for common properties across available frames
 var masks = [{src:'/img/frames/textless/eoe/masks/maskPinlines.png', name:'Pinlines'}, {src:'/img/frames/textless/eoe/masks/maskSymbol.png', name:'Mana Symbol'}, {src:'/img/frames/textless/eoe/masks/maskTitle.png', name:'Title'}, {src:'/img/frames/textless/eoe/masks/maskNoBorder.png', name:'No Border'}, {src:'/img/frames/textless/eoe/masks/maskBorder.png', name:'Border'}];
+var masks2 = [{src:'/img/frames/textless/eoe/symbols/masks/maskLeft.png', name:'Left Half'},{src:'/img/frames/textless/eoe/symbols/masks/maskRight.png', name:'Right Half'}];
 var bounds = {x:62/1500, y:1752/2100, width:168/1500, height:168/2100};
 //defines available frames
 availableFrames = [
@@ -11,7 +12,16 @@ availableFrames = [
 	{name:'Multicolored Frame', src:'/img/frames/textless/eoe/m.png', masks:masks},
 	{name:'Colorless Frame', src:'/img/frames/textless/eoe/a.png', masks:masks},
     {name:'Waste Frame', src:'/img/frames/textless/eoe/L.png', masks:masks},
-	{name:'No Alpha Frame (Use Mask To Remove Symbol Or Title From Other Frames)', src:'/img/frames/textless/eoe/aNoAlpha.png', masks:masks}
+	{name:'Black (Alt) Frame', src:'/img/frames/textless/eoe/bAlt.png', masks:masks},
+
+	{name:'Plains Symbol', src:'/img/frames/textless/eoe/symbols/plains.png', masks:masks2},
+	{name:'Island Symbol', src:'/img/frames/textless/eoe/symbols/island.png', masks:masks2},
+	{name:'Swamp Symbol', src:'/img/frames/textless/eoe/symbols/swamp.png', masks:masks2},
+	{name:'Mountain Symbol', src:'/img/frames/textless/eoe/symbols/mountain.png', masks:masks2},
+	{name:'Forest Symbol', src:'/img/frames/textless/eoe/symbols/forest.png', masks:masks2},
+	{name:'Mythic Symbol', src:'/img/frames/textless/eoe/symbols/mythic.png', masks:masks2},
+	{name:'Waste Symbol', src:'/img/frames/textless/eoe/symbols/waste.png', masks:masks2}
+
 
 ];
 //disables/enables the "Load Frame Version" button
