@@ -1590,7 +1590,9 @@ function makeM15FrameByLetter(letter, mask = false, maskToRightHalf = false, sty
 
 	if ((mask.includes('Crown') || mask == 'PT' || mask.includes('Stamp')) && letter.includes('L') && letter.length > 1) {
 		letter = letter[0];
-	}
+	} else if (letter == 'L' && style == 'Nyx') {
+		style = 'regular'
+;	}
 
 	var frameName = frameNames[letter];
 
@@ -2142,6 +2144,8 @@ function makeM15EighthUBFrameByLetter(letter, mask = false, maskToRightHalf = fa
 function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = false, style, universesBeyond = false) {
 	letter = letter.toUpperCase();
 
+	var isVehicle = letter == 'V';
+
 	if (letter == 'V') {
 		letter = 'A';
 	}
@@ -2248,7 +2252,7 @@ function makeBorderlessFrameByLetter(letter, mask = false, maskToRightHalf = fal
 	if (mask == 'PT') {
 		return {
 			'name': frameName + ' Power/Toughness',
-			'src': '/img/frames/m15/borderless/pt/' + letter.toLowerCase() + '.png',
+			'src': '/img/frames/m15/borderless/pt/' + (isVehicle ? 'v' : letter.toLowerCase())+ '.png',
 			'masks': [],
 			'bounds': {
 				'height': 0.066666666666,
@@ -4667,7 +4671,7 @@ function fetchSetSymbol() {
 		localStorage.setItem('lockSetSymbolCode', setCode);
 	}
 	var setRarity = document.querySelector('#set-symbol-rarity').value.toLowerCase().replace('uncommon', 'u').replace('common', 'c').replace('rare', 'r').replace('mythic', 'm') || 'c';
-	if (['a22', 'a23', 'j22'].includes(setCode.toLowerCase())) {
+	if (['a22', 'a23', 'j22', 'hlw'].includes(setCode.toLowerCase())) {
 		uploadSetSymbol(fixUri(`/img/setSymbols/custom/${setCode.toLowerCase()}-${setRarity}.png`), 'resetSetSymbol');
 	} else if (['cc', 'logan', 'joe'].includes(setCode.toLowerCase())) {
 		uploadSetSymbol(fixUri(`/img/setSymbols/custom/${setCode.toLowerCase()}-${setRarity}.svg`), 'resetSetSymbol');
@@ -4679,7 +4683,7 @@ function fetchSetSymbol() {
 		uploadSetSymbol('https://api.hexproof.io/symbols/set/' + setCode + '/' + setRarity, 'resetSetSymbol');
 	} else {
 		var extension = 'svg';
-		if (['moc', 'ltr', 'ltc', 'cmm', 'who', 'scd', 'woe', 'wot', 'woc', 'lci', 'lcc', 'mkm', 'mkc', 'otj', 'otc', 'dft', 'drc', 'tdm', 'tdc', 'fin', 'fic'].includes(setCode.toLowerCase())) {
+		if (['moc', 'ltr', 'ltc', 'cmm', 'who', 'scd', 'woe', 'wot', 'woc', 'lci', 'lcc', 'mkm', 'mkc', 'otj', 'otc', 'dft', 'drc', 'tdm', 'tdc', 'fin', 'fic', 'pio', 'om1'].includes(setCode.toLowerCase())) {
 			extension = 'png';
 		}
 		if (setSymbolAliases.has(setCode.toLowerCase())) setCode = setSymbolAliases.get(setCode.toLowerCase());
@@ -5126,7 +5130,13 @@ function importCard(cardObject) {
 	cardObject.forEach(card => {
 		if (card.type_line && card.type_line != 'Card') {
 			var option = document.createElement('option');
-			var title = `${card.name} `;
+			var name = card.printed_name || card.name;
+			if (card.flavor_name) {
+				name += " (" + card.flavor_name +")";
+			} else if (card.printed_name) {
+				name += " (" + card.name + ")";
+			}
+			var title = `${name} `;
 			if (document.querySelector('#importAllPrints').checked) {
 				title += `(${card.set.toUpperCase()} #${card.collector_number})`;
 			} else {
@@ -5747,6 +5757,7 @@ function changeCardIndex() {
 
         textEdited();
     }
+  
 	var name = cardToImport.printed_name || cardToImport.name || '';
 	if (name.startsWith('A-')) { name = name.replace('A-', '{alchemy}'); }
 
