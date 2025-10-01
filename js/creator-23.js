@@ -5747,7 +5747,7 @@ function changeCardIndex() {
 
         textEdited();
     }
-	var name = cardToImport.name || '';
+	var name = cardToImport.printed_name || cardToImport.name || '';
 	if (name.startsWith('A-')) { name = name.replace('A-', '{alchemy}'); }
 
 	if (card.text.title) {
