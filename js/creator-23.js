@@ -5835,10 +5835,10 @@ function processScryfallCard(card, responseCards) {
 			face.rarity = card.rarity;
 			face.collector_number = card.collector_number;
 			face.lang = card.lang;
-			if (card.lang != 'en') {
-				face.oracle_text = face.printed_text;
-				face.name = face.printed_name;
-				face.type_line = face.printed_type_line;
+			if (card.lang != 'en' || face.printed_name) {
+				face.oracle_text = face.printed_text || face.oracle_text;
+				face.name = face.printed_name || face.name;
+				face.type_line = face.printed_type_line || face.type_line;
 			}
 			responseCards.push(face);
 			if (!face.image_uris) {
@@ -5846,10 +5846,10 @@ function processScryfallCard(card, responseCards) {
 			}
 		});
 	} else {
-		if (card.lang != 'en') {
-			card.oracle_text = card.printed_text;
-			card.name = card.printed_name;
-			card.type_line = card.printed_type_line;
+		if (card.lang != 'en' || card.printed_name) {
+			card.oracle_text = card.printed_text || card.oracle_text;
+			card.name = card.printed_name || card.name;
+			card.type_line = card.printed_type_line || card.type_line;
 		}
 		responseCards.push(card);
 	}
