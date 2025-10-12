@@ -12,6 +12,7 @@ const frameNames = new Map ([
 	['Miracle', 'M15Miracle'],
 	['Holo Stamps', 'M15HoloStamps'],
 	['Nicknames', 'M15Nickname-2'],
+	['Smooth Nickname Legend Crowns', 'M15SmoothNickname'],
 	['Dark Power/Toughness', 'M15DarkPT'],
 	['Colored Borders', 'M15Borders'],
 	['Color Identity Pips', 'M15CIPips'],
@@ -215,6 +216,7 @@ const frameNames = new Map ([
 	['Promo Nickname Frames', 'PromoNickname'],
 	['Promo Generic Showcase', 'PromoGenericShowcase'],
 	//textless
+	['Edge of Eternities Basics (EOE)', 'EOEBasics'],
 	['Kamigawa Basics (NEO)', 'NeoBasics'],
 	['Fullart Basics (2022)', 'TextlessBasics2022'],
 	['Fullart Basics (Universes Beyond)', 'TextlessBasics2022UB'],

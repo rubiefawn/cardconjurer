@@ -4678,9 +4678,14 @@ function fetchSetSymbol() {
 	} else if (document.querySelector("#set-symbol-source").value == 'gatherer') {
 		if (setSymbolAliases.has(setCode.toLowerCase())) setCode = setSymbolAliases.get(setCode.toLowerCase());
 		uploadSetSymbol('http://gatherer.wizards.com/Handlers/Image.ashx?type=symbol&set=' + setCode + '&size=large&rarity=' + setRarity, 'resetSetSymbol');
-	} else if (document.querySelector("#set-symbol-source").value == 'hexproof') {
-		if (setSymbolAliases.has(setCode.toLowerCase())) setCode = setSymbolAliases.get(setCode.toLowerCase());
-		uploadSetSymbol('https://api.hexproof.io/symbols/set/' + setCode + '/' + setRarity, 'resetSetSymbol');
+    } else if (document.querySelector("#set-symbol-source").value == 'hexproof') {
+        if (setSymbolAliases.has(setCode.toLowerCase())) setCode = setSymbolAliases.get(setCode.toLowerCase());
+        var hexproofUrl = 'https://api.hexproof.io/symbols/set/' + setCode + '/' + setRarity;
+        // Use CORS proxy for hexproof.io
+        if (params.get('noproxy') == null) {
+            hexproofUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(hexproofUrl);
+        }
+        uploadSetSymbol(hexproofUrl, 'resetSetSymbol');
 	} else {
 		var extension = 'svg';
 		if (['moc', 'ltr', 'ltc', 'cmm', 'who', 'scd', 'woe', 'wot', 'woc', 'lci', 'lcc', 'mkm', 'mkc', 'otj', 'otc', 'dft', 'drc', 'tdm', 'tdc', 'fin', 'fic', 'pio', 'om1'].includes(setCode.toLowerCase())) {
@@ -6347,11 +6352,11 @@ function processScryfallCard(card, responseCards) {
 			face.rarity = card.rarity;
 			face.collector_number = card.collector_number;
 			face.lang = card.lang;
-			face.layout = card.layout; // Add layout from parent card
-			if (card.lang != 'en') {
-				face.oracle_text = face.printed_text;
-				face.name = face.printed_name;
-				face.type_line = face.printed_type_line;
+      face.layout = card.layout; // Add layout from parent card
+			if (card.lang != 'en' || face.printed_name) {
+				face.oracle_text = face.printed_text || face.oracle_text;
+				face.name = face.printed_name || face.name;
+				face.type_line = face.printed_type_line || face.type_line;
 			}
 			responseCards.push(face);
 			if (!face.image_uris) {
@@ -6359,10 +6364,10 @@ function processScryfallCard(card, responseCards) {
 			}
 		});
 	} else {
-		if (card.lang != 'en') {
-			card.oracle_text = card.printed_text;
-			card.name = card.printed_name;
-			card.type_line = card.printed_type_line;
+		if (card.lang != 'en' || card.printed_name) {
+			card.oracle_text = card.printed_text || card.oracle_text;
+			card.name = card.printed_name || card.name;
+			card.type_line = card.printed_type_line || card.type_line;
 		}
 		// Ensure layout is set even for single-faced cards
 		if (!card.layout) {
