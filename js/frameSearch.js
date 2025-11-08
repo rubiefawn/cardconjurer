@@ -45,6 +45,7 @@ const frameNames = new Map ([
 	['Colorshifted (Planar Chaos)', 'Colorshifted'],
 	['Brawl Legend Crowns', 'Brawl'],
 	// Showcase
+	['Avatar Elemental (TLA)', 'Elemental'],
 	['Borderless Stellar Sights (EOS)', 'BorderlessStellarSights'],
 	['Poster Stellar Sights (EOS)', 'PosterStellarSights'],
 	['Borderless Source Material', 'FCA'],
