@@ -9,6 +9,9 @@ availableFrames = [
 	{name:'Red Extension', src:'/img/frames/elemental/margin/r.png', bounds:bounds, ogBounds:ogBounds},
 	{name:'Green Extension', src:'/img/frames/elemental/margin/g.png', bounds:bounds, ogBounds:ogBounds},
 	{name:'Multicolored Extension', src:'/img/frames/elemental/margin/m.png', bounds:bounds, ogBounds:ogBounds},
+	{name:'Artifact Extension', src:'/img/frames/elemental/margin/a.png', bounds:bounds, ogBounds:ogBounds},
+	{name:'Land Extension', src:'/img/frames/elemental/margin/l.png', bounds:bounds, ogBounds:ogBounds},
+	{name:'Colorless Extension', src:'/img/frames/elemental/margin/c.png', bounds:bounds, ogBounds:ogBounds}
 ];
 //disables/enables the "Load Frame Version" button
 document.querySelector('#loadFrameVersion').disabled = false;
