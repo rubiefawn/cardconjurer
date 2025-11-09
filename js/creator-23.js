@@ -3161,6 +3161,12 @@ async function addFrame(additionalMasks = [], loadingFrame = false) {
 		if ('complementary' in frameToAdd && frameToAdd.masks.length == 0) {
 			if (typeof frameToAdd.complementary == 'number') {
 				frameToAdd.complementary = [frameToAdd.complementary];
+			} else if (typeof frameToAdd.complementary == 'string') {
+				availableFrames.forEach((availableFrame, index, availableFrames) => {
+				  if (availableFrame.name == frameToAdd.complementary) {
+				  	frameToAdd.complementary = [index];
+				  }
+				})
 			}
 			const realFrameIndex = selectedFrameIndex;
 			for (const index of frameToAdd.complementary) {
