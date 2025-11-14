@@ -871,7 +871,7 @@ function autoFrame() {
 		autoExtendedArtFrame(colors, card.text.mana.text, card.text.type.text, card.text.pt.text, true);
 	} else if (frame == '8th') {
 		group = 'Misc-2';
-		auto8thEditionFrame(colors, card.text.mana.text, card.text.type.text, card.text.pt.text, false);
+		auto8thEditionFrame(colors, card.text.mana.text, card.text.type.text, card.text.pt.text);
 	} else if (frame == 'Borderless') {
 		group = 'Showcase-5';
 		autoBorderlessFrame(colors, card.text.mana.text, card.text.type.text, card.text.pt.text);
@@ -1355,7 +1355,7 @@ async function autoBorderlessUBFrame(colors, mana_cost, type_line, power) {
 	await card.frames.forEach(item => addFrame([], item));
 	card.frames.reverse();
 }
-async function auto8thEditionFrame(colors, mana_cost, type_line, power, colorshifted = false) {
+async function auto8thEditionFrame(colors, mana_cost, type_line, power) {
 	var frames = card.frames.filter(frame => frame.name.includes('Extension'));
 
 	//clear the draggable frames
@@ -1363,26 +1363,30 @@ async function auto8thEditionFrame(colors, mana_cost, type_line, power, colorshi
 	document.querySelector('#frame-list').innerHTML = null;
 
 	var properties = cardFrameProperties(colors, mana_cost, type_line, power);
+	var style = 'regular';
+	if (type_line.toLowerCase().includes('enchantment creature') || type_line.toLowerCase().includes('enchantment artifact') || (document.querySelector('#autoframe-always-nyx').checked && type_line.toLowerCase().includes('enchantment'))) {
+		style = 'Nyx';
+	}
 
 	// Set frames
 	if (properties.pt) {
-		frames.push(make8thEditionFrameByLetter(properties.pt, 'PT', false, colorshifted));
+		frames.push(make8thEditionFrameByLetter(properties.pt, 'PT', false, style));
 	}
 	if (properties.pinlineRight) {
-		frames.push(make8thEditionFrameByLetter(properties.pinlineRight, 'Pinline', true, colorshifted));
+		frames.push(make8thEditionFrameByLetter(properties.pinlineRight, 'Pinline', true, style));
 	}
-	frames.push(make8thEditionFrameByLetter(properties.pinline, 'Pinline', false, colorshifted));
-	frames.push(make8thEditionFrameByLetter(properties.typeTitle, 'Type', false, colorshifted));
-	frames.push(make8thEditionFrameByLetter(properties.typeTitle, 'Title', false, colorshifted));
+	frames.push(make8thEditionFrameByLetter(properties.pinline, 'Pinline', false, style));
+	frames.push(make8thEditionFrameByLetter(properties.typeTitle, 'Type', false, style));
+	frames.push(make8thEditionFrameByLetter(properties.typeTitle, 'Title', false, style));
 	if (properties.pinlineRight) {
-		frames.push(make8thEditionFrameByLetter(properties.rulesRight, 'Rules', true, colorshifted));
+		frames.push(make8thEditionFrameByLetter(properties.rulesRight, 'Rules', true, style));
 	}
-	frames.push(make8thEditionFrameByLetter(properties.rules, 'Rules', false, colorshifted));
+	frames.push(make8thEditionFrameByLetter(properties.rules, 'Rules', false, style));
 	if (properties.frameRight) {
-		frames.push(make8thEditionFrameByLetter(properties.frameRight, 'Frame', true, colorshifted));
+		frames.push(make8thEditionFrameByLetter(properties.frameRight, 'Frame', true, style));
 	}
-	frames.push(make8thEditionFrameByLetter(properties.frame, 'Frame', false, colorshifted));
-	frames.push(make8thEditionFrameByLetter(properties.frame, 'Border', false, colorshifted));
+	frames.push(make8thEditionFrameByLetter(properties.frame, 'Frame', false, style));
+	frames.push(make8thEditionFrameByLetter(properties.frame, 'Border', false, style));
 
 	card.frames = frames;
 	card.frames.reverse();
@@ -2344,9 +2348,11 @@ function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = fal
 		}
 	}
 
+	var stylePath = style == 'Nyx' ? '/nyx/' : '';
+
 	var frame = {
 		'name': frameName + ' Frame',
-		'src': '/img/frames/8th/' + letter.toLowerCase() + '.png',
+		'src': '/img/frames/8th/' + stylePath + letter.toLowerCase() + '.png',
 	}
 
 	if (letter.includes('L') && letter.length > 1) {
