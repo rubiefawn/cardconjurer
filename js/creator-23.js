@@ -2340,12 +2340,7 @@ function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = fal
 			'name': frameName + ' Power/Toughness',
 			'src': '/img/frames/8th/pt/' + letter.toLowerCase() + '.png',
 			'masks': [],
-			'bounds': {
-				'height': 0.0839,
-				'width': 0.2147,
-				'x': 0.7227,
-				'y': 0.8796
-			}
+			'bounds': {x:1461/2010, y:2481/2814, width:414/2010, height:218/2814}
 		}
 	}
 
@@ -2365,10 +2360,6 @@ function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = fal
 				'name': mask
 			}
 		]
-
-		if (mask == 'Border') {
-			frame.masks[0].src = frame.masks[0].src.replace('.png', '.svg');
-		}
 
 		if (maskToRightHalf) {
 			frame.masks.push({
