@@ -328,6 +328,7 @@ loadManaSymbols(['wu', 'wb', 'ub', 'ur', 'br', 'bg', 'rg', 'rw', 'gw', 'gu', '2w
 				 'wup', 'wbp', 'ubp', 'urp', 'brp', 'bgp', 'rgp', 'rwp', 'gwp', 'gup', 'purplew', 'purpleu', 'purpleb', 'purpler', 'purpleg',
 				 '2purple', 'purplep', 'cw', 'cu', 'cb', 'cr', 'cg'], [1.2, 1.2]);
 loadManaSymbols(['bar.png', 'whitebar.png']);
+loadManaSymbols(['brush', 'whitebrush'], [2.85, 2.85]);
 loadManaSymbols(['xxbgw', 'xxbrg', 'xxgub', 'xxgwu', 'xxrgw', 'xxrwu', 'xxubr', 'xxurg', 'xxwbr', 'xxwub'], [1.2, 1.2]);
 loadManaSymbols(true, ['chaos'], [1.2, 1]);
 loadManaSymbols(true, ['tk'], [0.8, 1]);
@@ -3648,17 +3649,15 @@ function writeText(textObject, targetContext) {
 
 		    for (let part of tagParts) {
 
-		        // Split into base frame name and any mask rules
+		        // Split into frame name + mask rules
 		        const [rawFrameName, ...maskRuleParts] = part.split("*");
 		        const frameName = rawFrameName.replace(/_/g, " ").toLowerCase();
 
-		        // Build lists of positive/negative mask requirements
 		        const positiveMasks = [];
 		        const negativeMasks = [];
 
 		        for (let rule of maskRuleParts) {
 		            if (!rule) continue;
-
 		            if (rule.startsWith("!")) {
 		                negativeMasks.push(rule.substring(1).replace(/_/g, " ").toLowerCase());
 		            } else {
@@ -3666,7 +3665,6 @@ function writeText(textObject, targetContext) {
 		            }
 		        }
 
-		        // Find all frames matching the base frame name
 		        const matchingFrames = card.frames.filter(f =>
 		            f.name.toLowerCase().includes(frameName)
 		        );
@@ -3674,31 +3672,33 @@ function writeText(textObject, targetContext) {
 		        for (const frame of matchingFrames) {
 		            const masks = frame.masks || [];
 
+		            // --------------------------------------
+		            // SPECIAL RULE:
+		            // If NO masks → always match immediately
+		            // --------------------------------------
+		            if (masks.length === 0) {
+		                textColor = colorToApply;
+		                lineContext.fillStyle = textColor;
+		                continue;
+		            }
+
 		            const maskNames = masks.map(m => m.name.toLowerCase());
 
-		            // --- Positive mask requirements -------------------------
-		            // Must match at least one mask for each positive rule.
+		            // --- Positive mask rules -------------------------
 		            let passesPositive = true;
 
 		            if (positiveMasks.length > 0) {
-		                if (masks.length === 0) {
-		                    // No masks means you CANNOT satisfy a positive requirement
-		                    passesPositive = false;
-		                } else {
-		                    passesPositive = positiveMasks.every(pos =>
-		                        maskNames.some(mask => mask.includes(pos))
-		                    );
-		                }
+		                passesPositive = positiveMasks.every(pos =>
+		                    maskNames.some(mask => mask.includes(pos))
+		                );
 		            }
 
 		            if (!passesPositive) continue;
 
-		            // --- Negative mask requirements -------------------------
-		            // Must NOT match any of the negative masks.
+		            // --- Negative mask rules -------------------------
 		            let passesNegative = true;
 
 		            if (negativeMasks.length > 0) {
-		                // A frame with no masks is fine — it satisfies all negatives
 		                passesNegative = negativeMasks.every(neg =>
 		                    !maskNames.some(mask => mask.includes(neg))
 		                );
@@ -3706,7 +3706,7 @@ function writeText(textObject, targetContext) {
 
 		            if (!passesNegative) continue;
 
-		            // If we made it here: ALL conditions passed.
+		            // All conditions passed
 		            textColor = colorToApply;
 		        }
 		    }
@@ -3853,17 +3853,15 @@ function writeText(textObject, targetContext) {
 
 				    for (let part of tagParts) {
 
-				        // Split into base frame name and any mask rules
+				        // Split into frame name + mask rules
 				        const [rawFrameName, ...maskRuleParts] = part.split("*");
 				        const frameName = rawFrameName.replace(/_/g, " ").toLowerCase();
 
-				        // Build lists of positive/negative mask requirements
 				        const positiveMasks = [];
 				        const negativeMasks = [];
 
 				        for (let rule of maskRuleParts) {
 				            if (!rule) continue;
-
 				            if (rule.startsWith("!")) {
 				                negativeMasks.push(rule.substring(1).replace(/_/g, " ").toLowerCase());
 				            } else {
@@ -3871,7 +3869,6 @@ function writeText(textObject, targetContext) {
 				            }
 				        }
 
-				        // Find all frames matching the base frame name
 				        const matchingFrames = card.frames.filter(f =>
 				            f.name.toLowerCase().includes(frameName)
 				        );
@@ -3879,31 +3876,33 @@ function writeText(textObject, targetContext) {
 				        for (const frame of matchingFrames) {
 				            const masks = frame.masks || [];
 
+				            // --------------------------------------
+				            // SPECIAL RULE:
+				            // If NO masks → always match immediately
+				            // --------------------------------------
+				            if (masks.length === 0) {
+				                textColor = colorToApply;
+				                lineContext.fillStyle = textColor;
+				                continue;
+				            }
+
 				            const maskNames = masks.map(m => m.name.toLowerCase());
 
-				            // --- Positive mask requirements -------------------------
-				            // Must match at least one mask for each positive rule.
+				            // --- Positive mask rules -------------------------
 				            let passesPositive = true;
 
 				            if (positiveMasks.length > 0) {
-				                if (masks.length === 0) {
-				                    // No masks means you CANNOT satisfy a positive requirement
-				                    passesPositive = false;
-				                } else {
-				                    passesPositive = positiveMasks.every(pos =>
-				                        maskNames.some(mask => mask.includes(pos))
-				                    );
-				                }
+				                passesPositive = positiveMasks.every(pos =>
+				                    maskNames.some(mask => mask.includes(pos))
+				                );
 				            }
 
 				            if (!passesPositive) continue;
 
-				            // --- Negative mask requirements -------------------------
-				            // Must NOT match any of the negative masks.
+				            // --- Negative mask rules -------------------------
 				            let passesNegative = true;
 
 				            if (negativeMasks.length > 0) {
-				                // A frame with no masks is fine — it satisfies all negatives
 				                passesNegative = negativeMasks.every(neg =>
 				                    !maskNames.some(mask => mask.includes(neg))
 				                );
@@ -3911,7 +3910,7 @@ function writeText(textObject, targetContext) {
 
 				            if (!passesNegative) continue;
 
-				            // If we made it here: ALL conditions passed.
+				            // All conditions passed
 				            textColor = colorToApply;
 				            lineContext.fillStyle = textColor;
 				        }
@@ -4051,8 +4050,11 @@ function writeText(textObject, targetContext) {
 						(getManaSymbol(textObject.manaPrefix + possibleCode) != undefined || getManaSymbol(textObject.manaPrefix + possibleCode.split('').reverse().join('')) != undefined)) {
 						manaSymbol = getManaSymbol(textObject.manaPrefix + possibleCode) || getManaSymbol(textObject.manaPrefix + possibleCode.split('').reverse().join(''));
 					} else {
+						if (possibleCode == 'brush' && textColor == 'white') {
+							possibleCode = 'whitebrush';
+						}
 						manaSymbol = getManaSymbol(possibleCode) || getManaSymbol(possibleCode.split('').reverse().join(''));
-					}
+					} 
 
 					var origManaSymbolColor = manaSymbolColor;
 					if (manaSymbol.matchColor && !manaSymbolColor && textColor !== 'black') {
