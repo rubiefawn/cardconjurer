@@ -3643,12 +3643,73 @@ function writeText(textObject, targetContext) {
 		var textColor = textObject.color || 'black';
 		if (textObject.conditionalColor != undefined) {
 			var codeParams = textObject.conditionalColor.split(":");
-			for (var eligibleFrame of codeParams[0].split(",")) {
-				eligibleFrame = eligibleFrame.replace(/_/g, " ").toLowerCase();
-				if (card.frames.findIndex(element => element.name.toLowerCase().includes(eligibleFrame)) != -1) {
-					textColor = codeParams[1];
-				}
-			}
+			const tagParts = codeParams[1].split(",");
+		    const colorToApply = codeParams[2];
+
+		    for (let part of tagParts) {
+
+		        // Split into base frame name and any mask rules
+		        const [rawFrameName, ...maskRuleParts] = part.split("*");
+		        const frameName = rawFrameName.replace(/_/g, " ").toLowerCase();
+
+		        // Build lists of positive/negative mask requirements
+		        const positiveMasks = [];
+		        const negativeMasks = [];
+
+		        for (let rule of maskRuleParts) {
+		            if (!rule) continue;
+
+		            if (rule.startsWith("!")) {
+		                negativeMasks.push(rule.substring(1).replace(/_/g, " ").toLowerCase());
+		            } else {
+		                positiveMasks.push(rule.replace(/_/g, " ").toLowerCase());
+		            }
+		        }
+
+		        // Find all frames matching the base frame name
+		        const matchingFrames = card.frames.filter(f =>
+		            f.name.toLowerCase().includes(frameName)
+		        );
+
+		        for (const frame of matchingFrames) {
+		            const masks = frame.masks || [];
+
+		            const maskNames = masks.map(m => m.name.toLowerCase());
+
+		            // --- Positive mask requirements -------------------------
+		            // Must match at least one mask for each positive rule.
+		            let passesPositive = true;
+
+		            if (positiveMasks.length > 0) {
+		                if (masks.length === 0) {
+		                    // No masks means you CANNOT satisfy a positive requirement
+		                    passesPositive = false;
+		                } else {
+		                    passesPositive = positiveMasks.every(pos =>
+		                        maskNames.some(mask => mask.includes(pos))
+		                    );
+		                }
+		            }
+
+		            if (!passesPositive) continue;
+
+		            // --- Negative mask requirements -------------------------
+		            // Must NOT match any of the negative masks.
+		            let passesNegative = true;
+
+		            if (negativeMasks.length > 0) {
+		                // A frame with no masks is fine — it satisfies all negatives
+		                passesNegative = negativeMasks.every(neg =>
+		                    !maskNames.some(mask => mask.includes(neg))
+		                );
+		            }
+
+		            if (!passesNegative) continue;
+
+		            // If we made it here: ALL conditions passed.
+		            textColor = colorToApply;
+		        }
+		    }
 		}
 		var textFont = textObject.font || 'mplantin';
 		var textAlign = textObject.align || 'left';
@@ -3786,14 +3847,75 @@ function writeText(textObject, targetContext) {
 				} else if (possibleCode == 'justify-right') {
 					textJustify = 'right';
 				} else if (possibleCode.includes('conditionalcolor')) {
-					var codeParams = possibleCode.split(":");
-					for (var eligibleFrame of codeParams[1].split(",")) {
-						eligibleFrame = eligibleFrame.replace(/_/g, " ");
-						if (card.frames.findIndex(element => element.name.toLowerCase().includes(eligibleFrame)) != -1) {
-							textColor = codeParams[2];
-							lineContext.fillStyle = textColor;
-						}
-					}
+				    const codeParams = possibleCode.split(":");
+				    const tagParts = codeParams[1].split(",");
+				    const colorToApply = codeParams[2];
+
+				    for (let part of tagParts) {
+
+				        // Split into base frame name and any mask rules
+				        const [rawFrameName, ...maskRuleParts] = part.split("*");
+				        const frameName = rawFrameName.replace(/_/g, " ").toLowerCase();
+
+				        // Build lists of positive/negative mask requirements
+				        const positiveMasks = [];
+				        const negativeMasks = [];
+
+				        for (let rule of maskRuleParts) {
+				            if (!rule) continue;
+
+				            if (rule.startsWith("!")) {
+				                negativeMasks.push(rule.substring(1).replace(/_/g, " ").toLowerCase());
+				            } else {
+				                positiveMasks.push(rule.replace(/_/g, " ").toLowerCase());
+				            }
+				        }
+
+				        // Find all frames matching the base frame name
+				        const matchingFrames = card.frames.filter(f =>
+				            f.name.toLowerCase().includes(frameName)
+				        );
+
+				        for (const frame of matchingFrames) {
+				            const masks = frame.masks || [];
+
+				            const maskNames = masks.map(m => m.name.toLowerCase());
+
+				            // --- Positive mask requirements -------------------------
+				            // Must match at least one mask for each positive rule.
+				            let passesPositive = true;
+
+				            if (positiveMasks.length > 0) {
+				                if (masks.length === 0) {
+				                    // No masks means you CANNOT satisfy a positive requirement
+				                    passesPositive = false;
+				                } else {
+				                    passesPositive = positiveMasks.every(pos =>
+				                        maskNames.some(mask => mask.includes(pos))
+				                    );
+				                }
+				            }
+
+				            if (!passesPositive) continue;
+
+				            // --- Negative mask requirements -------------------------
+				            // Must NOT match any of the negative masks.
+				            let passesNegative = true;
+
+				            if (negativeMasks.length > 0) {
+				                // A frame with no masks is fine — it satisfies all negatives
+				                passesNegative = negativeMasks.every(neg =>
+				                    !maskNames.some(mask => mask.includes(neg))
+				                );
+				            }
+
+				            if (!passesNegative) continue;
+
+				            // If we made it here: ALL conditions passed.
+				            textColor = colorToApply;
+				            lineContext.fillStyle = textColor;
+				        }
+				    }
 				} else if (possibleCode.includes('fontcolor')) {
 					textColor = possibleCode.replace('fontcolor', '');
 					lineContext.fillStyle = textColor;
