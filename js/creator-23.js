@@ -3644,8 +3644,8 @@ function writeText(textObject, targetContext) {
 		var textColor = textObject.color || 'black';
 		if (textObject.conditionalColor != undefined) {
 			var codeParams = textObject.conditionalColor.split(":");
-			const tagParts = codeParams[1].split(",");
-		    const colorToApply = codeParams[2];
+			const tagParts = codeParams[0].split(",");
+		    const colorToApply = codeParams[1];
 
 		    for (let part of tagParts) {
 
