@@ -2349,7 +2349,7 @@ function make8thEditionFrameByLetter(letter, mask = false, maskToRightHalf = fal
 		}
 	}
 
-	var stylePath = style == 'Nyx' ? '/nyx/' : '';
+	var stylePath = style == 'Nyx' ? 'nyx/' : '';
 
 	var frame = {
 		'name': frameName + ' Frame',
