@@ -3,6 +3,7 @@ var masks = [{src:'/img/frames/8th/dfc/back/pinline.png', name:'Pinline'}, {src:
 var masks2 = [{src:'/img/frames/8th/border.png', name:'Border'}];
 var pipMasks = [{src:'/img/frames/8th/dfc/ciPips/firstHalf.png', name:'First Half'}, {src:'/img/frames/8th/dfc/ciPips/secondHalf.png', name:'Second Half'}, {src:'/img/frames/8th/dfc/ciPips/firstThird.png', name:'First Third'}, {src:'/img/frames/8th/dfc/ciPips/secondThird.png', name:'Second Third'}, {src:'/img/frames/8th/dfc/ciPips/thirdThird.png', name:'Third Third'}];
 var bounds = {x:1461/2010, y:2481/2814, width:414/2010, height:218/2814};
+var iconBounds = {x:147/2010, y:171/2814, width:139/2010, height:139/2814}
 //defines available frames
 availableFrames = [
 	{name:'White Frame', src:'/img/frames/8th/dfc/back/w.png', masks:masks},
@@ -28,6 +29,21 @@ availableFrames = [
 	{name:'Red Color Indicator', src:'/img/frames/8th/dfc/ciPips/r.png', masks:pipMasks, complementary:'Color Indicator Base'},
 	{name:'Green Color Indicator', src:'/img/frames/8th/dfc/ciPips/g.png', masks:pipMasks, complementary:'Color Indicator Base'},
 	{name:'Color Indicator Base', src:'/img/frames/m15/ciPips/base.png', bounds:{x:179/2010, y:1610/2814, width:94/2010, height:94/2814}},
+
+	{name:'Up Arrow', src:'/img/frames/m15/transform/icons/default.png', bounds:iconBounds},
+	{name:'Down Arrow', src:'/img/frames/m15/transform/icons/downArrow.png', bounds:iconBounds},
+	{name:'Sun', src:'/img/frames/m15/transform/icons/sun.svg', bounds:iconBounds},
+	{name:'Crescent Moon', src:'/img/frames/m15/transform/icons/moon.svg', bounds:iconBounds},
+	{name:'Full Moon', src:'/img/frames/m15/transform/icons/fullmoon.svg', bounds:iconBounds},
+	{name:'Emrakul', src:'/img/frames/m15/transform/icons/emrakul.svg', bounds:iconBounds},
+	{name:'Compass', src:'/img/frames/m15/transform/icons/compass.svg', bounds:iconBounds},
+	{name:'Land', src:'/img/frames/m15/transform/icons/land.svg', bounds:iconBounds},
+	{name:'Planeswalker Ember', src:'/img/frames/m15/transform/icons/spark.svg', bounds:iconBounds},
+	{name:'Planeswalker Spark', src:'/img/frames/m15/transform/icons/planeswalker.svg', bounds:iconBounds},
+	{name:'Lesson', src:'/img/frames/m15/transform/icons/lesson.svg', bounds:iconBounds},
+	{name:'Closed Fan', src:'/img/frames/m15/transform/icons/fanClosed.svg', bounds:iconBounds},
+	{name:'Open Fan', src:'/img/frames/m15/transform/icons/fanOpen.svg', bounds:iconBounds},
+	{name:'Meld', src:'/img/frames/m15/transform/icons/hammer.png', bounds:iconBounds},
 
 	{name:'White Border', src:'/img/frames/white.png', masks:masks2, noDefaultMask:true},
 	{name:'Silver Border', src:'/img/frames/silver.png', masks:masks2, noDefaultMask:true},

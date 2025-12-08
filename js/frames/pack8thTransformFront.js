@@ -2,6 +2,7 @@
 var masks = [{src:'/img/frames/8th/dfc/front/pinline.png', name:'Pinline'}, {src:'/img/frames/8th/dfc/front/title.png', name:'Title'}, {src:'/img/frames/8th/type.png', name:'Type'}, {src:'/img/frames/8th/dfc/front/rules.png', name:'Rules'}, {src:'/img/frames/8th/dfc/front/frame.png', name:'Frame'}, {src:'/img/frames/8th/border.png', name:'Border'}];
 var masks2 = [{src:'/img/frames/8th/border.png', name:'Border'}];
 var bounds = {x:1461/2010, y:2481/2814, width:414/2010, height:218/2814};
+var iconBounds = {x:147/2010, y:171/2814, width:139/2010, height:139/2814}
 //defines available frames
 availableFrames = [
 	{name:'White Frame', src:'/img/frames/8th/dfc/front/w.png', masks:masks},
@@ -20,6 +21,21 @@ availableFrames = [
 	{name:'Multicolored Power/Toughness', src:'/img/frames/8th/pt/m.png', bounds:bounds},
 	{name:'Artifact Power/Toughness', src:'/img/frames/8th/pt/a.png', bounds:bounds},
 	{name:'Colorless Power/Toughness', src:'/img/frames/8th/pt/l.png', bounds:bounds},
+
+	{name:'Up Arrow', src:'/img/frames/m15/transform/icons/default.png', bounds:iconBounds},
+	{name:'Down Arrow', src:'/img/frames/m15/transform/icons/downArrow.png', bounds:iconBounds},
+	{name:'Sun', src:'/img/frames/m15/transform/icons/sun.svg', bounds:iconBounds},
+	{name:'Crescent Moon', src:'/img/frames/m15/transform/icons/moon.svg', bounds:iconBounds},
+	{name:'Full Moon', src:'/img/frames/m15/transform/icons/fullmoon.svg', bounds:iconBounds},
+	{name:'Emrakul', src:'/img/frames/m15/transform/icons/emrakul.svg', bounds:iconBounds},
+	{name:'Compass', src:'/img/frames/m15/transform/icons/compass.svg', bounds:iconBounds},
+	{name:'Land', src:'/img/frames/m15/transform/icons/land.svg', bounds:iconBounds},
+	{name:'Planeswalker Ember', src:'/img/frames/m15/transform/icons/spark.svg', bounds:iconBounds},
+	{name:'Planeswalker Spark', src:'/img/frames/m15/transform/icons/planeswalker.svg', bounds:iconBounds},
+	{name:'Lesson', src:'/img/frames/m15/transform/icons/lesson.svg', bounds:iconBounds},
+	{name:'Closed Fan', src:'/img/frames/m15/transform/icons/fanClosed.svg', bounds:iconBounds},
+	{name:'Open Fan', src:'/img/frames/m15/transform/icons/fanOpen.svg', bounds:iconBounds},
+	{name:'Meld', src:'/img/frames/m15/transform/icons/hammer.png', bounds:iconBounds},
 
 	{name:'White Border', src:'/img/frames/white.png', masks:masks2, noDefaultMask:true},
 	{name:'Silver Border', src:'/img/frames/silver.png', masks:masks2, noDefaultMask:true},
