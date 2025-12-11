@@ -2,6 +2,7 @@
 var masks = [{src:'/img/frames/8th/pinline.png', name:'Pinline'}, {src:'/img/frames/8th/title.png', name:'Title'}, {src:'/img/frames/8th/type.png', name:'Type'}, {src:'/img/frames/8th/rules.png', name:'Rules'}, {src:'/img/frames/8th/frame.png', name:'Frame'}, {src:'/img/frames/8th/border.png', name:'Border'}];
 var masks2 = [{src:'/img/frames/8th/border.png', name:'Border'}];
 var bounds = {x:1461/2010, y:2481/2814, width:414/2010, height:218/2814};
+var wmBounds = {x:710/2010, y:1830/2814, width: 634/2010, height:638/2814};
 //defines available frames
 availableFrames = [
 	{name:'White Frame', src:'/img/frames/8th/snow/w.png', masks:masks},
@@ -27,6 +28,12 @@ availableFrames = [
 	{name:'Multicolored Power/Toughness', src:'/img/frames/8th/pt/m.png', bounds:bounds},
 	{name:'Artifact Power/Toughness', src:'/img/frames/8th/pt/a.png', bounds:bounds},
 	{name:'Colorless Power/Toughness', src:'/img/frames/8th/pt/l.png', bounds:bounds},
+	{name:'White Watermark', src:'/img/frames/snow/watermarks/w.png', bounds:wmBounds},
+	{name:'Blue Watermark', src:'/img/frames/snow/watermarks/u.png', bounds:wmBounds},
+	{name:'Black Watermark', src:'/img/frames/snow/watermarks/b.png', bounds:wmBounds},
+	{name:'Red Watermark', src:'/img/frames/snow/watermarks/r.png', bounds:wmBounds},
+	{name:'Green Watermark', src:'/img/frames/snow/watermarks/g.png', bounds:wmBounds},
+	{name:'Colorless Watermark', src:'/img/frames/snow/watermarks/c.png', bounds:{x:687/2010, y:1830/2814, width: 634/2010, height:638/2814}},
 	{name:'White Border', src:'/img/frames/white.png', masks:masks2, noDefaultMask:true},
 	{name:'Silver Border', src:'/img/frames/silver.png', masks:masks2, noDefaultMask:true},
 	{name:'Gold Border', src:'/img/frames/gold.png', masks:masks2, noDefaultMask:true}
