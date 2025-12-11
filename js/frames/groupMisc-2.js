@@ -13,6 +13,7 @@ loadFramePacks([
 	{name:'Eighth Edition (Tranform Front)', value:'8thTransformFront'},
 	{name:'Eighth Edition (Tranform Back)', value:'8thTransformBack'},
 	{name:'Eighth Edition Universes Beyond', value:'8thUB'},
+	{name:'Eighth Edition Snow', value:'8thSnow'},
 	{name:'Eighth Edition Playtest Cards', value:'8thPlaytest'},
 	{name:'Playtest Cards', value:'Playtest'},
 	{name:'Dungeon (AFR)', value:'Dungeon'},
